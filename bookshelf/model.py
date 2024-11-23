@@ -1,5 +1,6 @@
-from typing import List
+from dataclasses import dataclass
 from enum import Enum
+from typing import Set
 
 
 class Status(Enum):
@@ -10,13 +11,22 @@ class Status(Enum):
     INTERRUPTED = "suspenso por prazo indefinido"
 
 
+@dataclass(frozen=True)
+class Category:
+    name: str
+
+
 class Book:
-    # TODO: verificar necessidade de criar uma classe para categoria e para status
     def __init__(
         self,
-        titulo: str,
-        idioma: str,
+        title: str,
+        language: str,
         isbn: str,
-        categoria: List[str] = [],
+        category: Set[Category],
         status: Status = Status.NOT_STARTED,
-    ) -> None: ...
+    ) -> None:
+        self.title = title
+        self.language = language
+        self.isbn = isbn
+        self.category = category
+        self.status = status
