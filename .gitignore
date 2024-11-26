@@ -4,7 +4,7 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-
+.pytest_cache
 # Icon must end with two \r
 Icon
 
