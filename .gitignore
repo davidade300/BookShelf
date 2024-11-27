@@ -7,8 +7,10 @@
 .pytest_cache
 # Icon must end with two \r
 Icon
-
-
+database.db
+assets
+assets/
+assets/*
 # Thumbnails
 ._*
 
