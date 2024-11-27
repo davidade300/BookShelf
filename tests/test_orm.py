@@ -17,7 +17,16 @@ def session():
 
     session = Session()
 
+    session.execute(
+        text(
+            "INSERT INTO tb_categories (name, book_isbn) VALUES ('development', 1234123) ;"
+        )
+    )
+
+    session.commit
+
     yield session
+
     session.close()
 
 
@@ -35,9 +44,8 @@ def test_book_mapper_can_load_books(session):
 
     assert session.query(Book).all() == expected
 
-    # TODO: fix this test
 
-
+# TODO: fix this test
 # def test_category_mapper_can_load_category(session): ...
 
 

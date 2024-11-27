@@ -31,6 +31,6 @@ def start_mappers():
         Category,
         tb_category,
         properties={
-            "book": relationship(Book, foreign_keys=[Category.book_isbn])
+            "book": relationship(Book, foreign_keys=[tb_category.c.book_isbn])
         },
     )
