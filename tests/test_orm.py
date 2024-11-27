@@ -28,13 +28,13 @@ def test_book_mapper_can_load_books(session):
     session.execute(
         text(
             "INSERT INTO tb_books (title, language, isbn, status) VALUES \
-        ('livro','asdf', 1234123,'não iniciado') ;"
+        ('DDD','Portuguese', 9788550800653,'em andamento') ;"
         )
     )
 
     session.commit()
 
-    expected = [Book("livro", "asdf", 1234123, Status.NOT_STARTED.value)]
+    expected = [Book("DDD", "Portuguese", 9788550800653, Status.ONGOING.value)]
 
     assert session.query(Book).all() == expected
 
@@ -42,13 +42,13 @@ def test_book_mapper_can_load_books(session):
 def test_category_mapper_can_load_category(session):
     session.execute(
         text(
-            "INSERT INTO tb_categories (name, book_isbn) VALUES ('Software Development', 1234123) ;"
+            "INSERT INTO tb_categories (name, book_isbn) VALUES ('Software Development', 9788550800653) ;"
         )
     )
 
     session.commit()
 
-    expected = [Category("Software Development", 1234123)]
+    expected = [Category("Software Development", 9788550800653)]
 
     assert session.query(Category).all() == expected
 
