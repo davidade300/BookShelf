@@ -1,29 +1,23 @@
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-from bookshelf.model import Book, Status
+from sqlalchemy.orm import sessionmaker, clear_mappers
+from bookshelf.model import Book, Category, Status
 import pytest
 from bookshelf.orm import metadata, start_mappers
 
 
 @pytest.fixture(scope="function")
 def session():
+    clear_mappers()  # this fixes the errors
+    start_mappers()
+
     engine = create_engine(
-        "sqlite:///:memory:", connect_args={"check_same_thread": False}
+        "sqlite:///:memory:", connect_args={"check_same_thread": True}
     )
 
     metadata.create_all(engine, checkfirst=True)
-    start_mappers()
+
     Session = sessionmaker(bind=engine)
-
     session = Session()
-
-    session.execute(
-        text(
-            "INSERT INTO tb_categories (name, book_isbn) VALUES ('development', 1234123) ;"
-        )
-    )
-
-    session.commit
 
     yield session
 
@@ -45,8 +39,18 @@ def test_book_mapper_can_load_books(session):
     assert session.query(Book).all() == expected
 
 
-# TODO: fix this test
-# def test_category_mapper_can_load_category(session): ...
+def test_category_mapper_can_load_category(session):
+    session.execute(
+        text(
+            "INSERT INTO tb_categories (name, book_isbn) VALUES ('Software Development', 1234123) ;"
+        )
+    )
+
+    session.commit()
+
+    expected = [Category("Software Development", 1234123)]
+
+    assert session.query(Category).all() == expected
 
 
 # TODO: Write this test

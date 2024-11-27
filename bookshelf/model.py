@@ -40,7 +40,7 @@ class Category:
     def __eq__(self, other) -> bool:
         if not isinstance(other, Category):
             return False
-        return (other.book_isbn == self.book_isbn) and (other.name == self.name)
+        return other.book_isbn == self.book_isbn and other.name == self.name
 
     def __hash__(self) -> int:
         return hash(self.name.casefold())
