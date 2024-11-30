@@ -28,7 +28,7 @@ def test_book_mapper_can_load_books(session):
     session.execute(
         text(
             "INSERT INTO tb_books (title, language, isbn, status) VALUES \
-        ('DDD','Portuguese', 9788550800653,'em andamento') ;"
+            ('DDD', 'Portuguese', 9788550800653, 'em andamento');"
         )
     )
 
@@ -42,16 +42,60 @@ def test_book_mapper_can_load_books(session):
 def test_category_mapper_can_load_category(session):
     session.execute(
         text(
-            "INSERT INTO tb_categories (name, book_isbn) VALUES ('Software Development', 9788550800653) ;"
+            "INSERT INTO tb_categories (name) VALUES ('Software Development');"
         )
     )
 
     session.commit()
 
-    expected = [Category("Software Development", 9788550800653)]
+    expected = [Category("Software Development")]
 
     assert session.query(Category).all() == expected
 
 
 # TODO: Write this test
-def test_can_return_book_using_tb_categories_isbn(session): ...
+def test_can_return_book_using_tb_book_categories_book_isbn(session):
+    session.execute(
+        text(
+            "INSERT INTO tb_books (title, language, isbn, status) VALUES  \
+            ('DDD', 'Portuguese', 9788550800653, 'em andamento');"
+        )
+    )
+
+    session.execute(
+        text(
+            "INSERT INTO tb_categories (name) VALUES \
+            ('Software Development');"
+        )
+    )
+
+    book_isbn = session.execute(
+        text("SELECT isbn FROM tb_books WHERE isbn = 9788550800653")
+    ).fetchone()[0]
+
+    category_name = session.execute(
+        text(
+            "SELECT name FROM tb_categories WHERE name = 'Software Development'"
+        )
+    ).fetchone()[0]
+
+    session.execute(
+        text(
+            "INSERT INTO tb_book_categories (book_isbn, category_name) VALUES (:book_isbn, :category_name);"
+        ),
+        {"book_isbn": book_isbn, "category_name": category_name},
+    )
+
+    session.commit()
+
+    books_in_category = session.execute(
+        text(
+            "SELECT b.title, b.language, b.isbn, b.status \
+             FROM tb_books b \
+             JOIN tb_book_categories bc ON b.isbn = bc.book_isbn \
+             JOIN tb_categories c ON bc.category_name = c.name \
+             WHERE c.name = 'Software Development';"
+        )
+    ).fetchall()
+
+    assert any(book[0] == "DDD" for book in books_in_category)
