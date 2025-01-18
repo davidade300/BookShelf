@@ -1,7 +1,8 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker, clear_mappers
-from bookshelf.model import Book, Category, Status
 import pytest
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import clear_mappers, sessionmaker
+
+from bookshelf.model import Book, Category, Status
 from bookshelf.orm import metadata, start_mappers
 
 
